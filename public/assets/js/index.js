@@ -4,6 +4,7 @@ let noteText;
 let saveNoteBtn;
 let newNoteBtn;
 let noteList;
+let clearBtn; // Declare the clearBtn variable
 
 if (window.location.pathname === '/notes') {
   noteForm = document.querySelector('.note-form');
@@ -12,7 +13,7 @@ if (window.location.pathname === '/notes') {
   saveNoteBtn = document.querySelector('.save-note');
   newNoteBtn = document.querySelector('.new-note');
   clearBtn = document.querySelector('.clear-btn');
-  noteList = document.querySelectorAll('.list-container .list-group');
+  noteList = document.querySelectorAll('#list-container #list-group');
 }
 
 // Show an element
@@ -34,8 +35,17 @@ const getNotes = () =>
     headers: {
       'Content-Type': 'application/json'
     }
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to fetch notes');
+    }
+    return response.json();
+  })
+  .catch(error => {
+    console.error('Failed to fetch notes', error);
   });
-
+function printSOmething(something){}
 const saveNote = (note) =>
   fetch('/api/notes', {
     method: 'POST',
@@ -129,9 +139,10 @@ const handleRenderBtns = () => {
 
 // Render the list of note titles
 const renderNoteList = async (notes) => {
-  let jsonNotes = await notes.json();
+  // let jsonNotes = await notes.json();
   if (window.location.pathname === '/notes') {
     noteList.forEach((el) => (el.innerHTML = ''));
+
   }
 
   let noteListItems = [];
@@ -165,11 +176,11 @@ const renderNoteList = async (notes) => {
     return liEl;
   };
 
-  if (jsonNotes.length === 0) {
+  if (notes.length === 0) {
     noteListItems.push(createLi('No saved Notes', false));
   }
 
-  jsonNotes.forEach((note) => {
+  notes.forEach((note) => {
     const li = createLi(note.title);
     li.dataset.note = JSON.stringify(note);
 
@@ -184,11 +195,19 @@ const renderNoteList = async (notes) => {
 // Gets notes from the db and renders them to the sidebar
 const getAndRenderNotes = () => getNotes().then(renderNoteList);
 
+
 if (window.location.pathname === '/notes') {
+
   saveNoteBtn.addEventListener('click', handleNoteSave);
   newNoteBtn.addEventListener('click', handleNewNoteView);
   clearBtn.addEventListener('click', renderActiveNote);
   noteForm.addEventListener('input', handleRenderBtns);
 }
 
+
 getAndRenderNotes();
+
+
+apiCall().then((response)=>{
+
+})

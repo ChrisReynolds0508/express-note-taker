@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 
 router.get("/api/notes", async (req, res) => {
-    const db = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'));
+    const db = await JSON.parse(fs.readFileSync('./db/db.json', 'utf8'));
     res.json(db);
 });
 
@@ -26,7 +26,7 @@ router.delete("/api/notes/:id", (req, res) => {
         return note.id !== req.params.id
     });
 fs.writeFileSync('./db/db.json', JSON.stringify(newData));
-res.json(newData);
+res.json("Note deleted");
 }); 
 
 module.exports = router;
