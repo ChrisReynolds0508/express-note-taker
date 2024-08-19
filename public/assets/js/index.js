@@ -208,6 +208,3 @@ if (window.location.pathname === '/notes') {
 getAndRenderNotes();
 
 
-apiCall().then((response)=>{
-
-})
